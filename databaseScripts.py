@@ -2,6 +2,7 @@ import pyodbc
 import datetime
 from passlib.context import CryptContext
 from random import randint
+myctx = CryptContext(schemes=["sha256_crypt", "md5_crypt", "des_crypt"])
 
 cnxn = pyodbc.connect("""
         Driver={ODBC Driver 13 for SQL Server};
@@ -16,10 +17,6 @@ cnxn = pyodbc.connect("""
     )
 cursor = cnxn.cursor()
 
-
-class user:
-
-class 
 '''
 Create user in database
 '''
@@ -35,7 +32,7 @@ def CreateNewUser(username, password, country, email, gender, birthYear):
         return "User already exists"
     else:
         myctx = CryptContext(schemes=["sha256_crypt", "md5_crypt", "des_crypt"])
-        salt = str(randint(1,200000))
+        salt = str(randint(10000,200000))
         hash1 = myctx.hash(password+salt)
         
         Username = username.lower()
@@ -53,7 +50,8 @@ def CreateNewUser(username, password, country, email, gender, birthYear):
                    ,[Country]
                    ,[Email]
                    ,[Gender]
-                   ,[BirthYear])
+                   ,[BirthYear]
+                   ,[TimeStamp])
              VALUES
                    (?,
                     ?,
@@ -61,9 +59,11 @@ def CreateNewUser(username, password, country, email, gender, birthYear):
                     ?,
                     ?,
                     ?,
-                    ?)
+                    ?,
+                    (getdate()))
         """, [Username, HashedPwd, PwdSalt, Country, Email, Gender, BirthYear])
         cnxn.commit()
+
 '''
 Login Function
 '''
@@ -76,10 +76,12 @@ def login(username, password):
     """, username)
     
     resp = cursor.fetchone()
-    
-    hash1 = resp[0]
-    salt = resp[1]
-    return myctx.verify(password+salt, hash1)
+    try:
+        hash1 = resp[0]
+        salt = resp[1]
+        return myctx.verify(password+salt, hash1)
+    except:
+        return "User dosen't exist"
 
 '''
 Writes reports to the database
@@ -88,10 +90,12 @@ def reportImage(username, ImagePath):
     cursor.execute("""
         INSERT INTO [dbo].[Report]
                    ([Username]
-                   ,[ImagePath])
+                   ,[ImagePath]
+                   ,[TimeStamp])
              VALUES
                    (?,
-                    ?)
+                    ?,
+                    (getdate()))
     """, [Username, ImagePath])
     cnxn.commit()
 
@@ -121,12 +125,14 @@ def vote(username, imagepath1, imagepath2, result):
                    ([Username]
                    ,[imagePath1]
                    ,[imagePath2]
-                   ,[Result])
+                   ,[Result]
+                   ,[TimeStamp])
              VALUES
                    (?,
                     ?,
                     ?,
-                    ?)
+                    ?,
+                    (getdate()))
         """, [username, imagepath1, imagepath2, result])
     cnxn.commit()
     
@@ -158,10 +164,12 @@ def updateElo(imagepath1, imagepath2, result):
     cursor.executemany("""
             INSERT INTO [dbo].[Elo]
                    ([IimagePath]
-                   ,[EloScore])
+                   ,[EloScore]
+                   ,[TimeStamp])
              VALUES
                    (?,
-                    ?)
+                    ?,
+                    (getdate()))
         """, post1)
     cnxn.commit()
     
@@ -179,14 +187,16 @@ Updates the image table in the database
 def uploadImage(ImagePath, Username, GenderOfImage):
     cursor.execute("""
         INSERT INTO [dbo].[Images]
-               ([ImagePath] 
+               ([ImagePath]
                ,[Username]
                ,[EloScore]
-               ,[GenderOfImage])
+               ,[GenderOfImage]
+               ,[TimeStamp])
          VALUES
                (?,
                 ?,
                 ?,
-                ?)
+                ?,
+                (getdate()))
     """, [ImagePath, Username, 1500, GenderOfImage])
     cnxn.commit()
