@@ -67,6 +67,8 @@ def CreateNewUser(username, password, country, email, gender, birthYear):
 '''
 Login Function
 '''
+myctx = CryptContext(schemes=["sha256_crypt", "md5_crypt", "des_crypt"])
+
 def login(username, password):
     cursor.execute("""
     SELECT [HashedPwd]
@@ -102,7 +104,19 @@ def reportImage(username, ImagePath):
 '''
 Calculating new elo scores
 '''
+
+def getEloScore(image):
+    cursor.execute("""
+    SELECT [EloScore]
+    FROM [dbo].[Elo]
+    WHERE [ImagePath] = ?
+    """, image)
+    
+    return cursor.fetchone()
+
 def updateScore(winner, loser, tie, k):
+    winner = getEloScore(winner)[0]
+    loser = getEloScore(loser)[0]
     EA = (1 / (1 + 10**((loser - winner)/400)))
     EB = (1 / (1 + 10**((winner - loser)/400)))
     
@@ -143,27 +157,32 @@ Writes the vote to the elo table
 Updates the Elo in the image table
 '''
 
-def updateElo(imagepath1, imagepath2, result):
-    if results == "image1":
+def updateElo(imagepath1, imagepath2, result):   
+    if result == "image1":
         winner = imagepath1
         loser = imagepath2
         tie = 0
         imagepath1Elo , imagepath2Elo = updateScore(winner, loser, tie, 30)
-    elif results == "image2":
+    elif result == "image2":
         winner = imagepath2
         loser = imagepath1
         tie = 0
         imagepath2Elo , imagepath1Elo  = updateScore(winner, loser, tie, 30)
-    elif results == "tie":
+    elif result == "tie":
         winner = imagepath1
         loser = imagepath2
-        drawn = 1
+        tie = 1
         imagepath1Elo , imagepath2Elo = updateScore(winner, loser, tie, 30)
     
+    imagepath1Elo = int(imagepath1Elo)
+    imagepath2Elo = int(imagepath2Elo)
+    
     post1 = [[imagepath1, imagepath1Elo], [imagepath2, imagepath2Elo]]
+    
+    print(post1)
     cursor.executemany("""
             INSERT INTO [dbo].[Elo]
-                   ([IimagePath]
+                   ([ImagePath]
                    ,[EloScore]
                    ,[TimeStamp])
              VALUES
@@ -199,4 +218,58 @@ def uploadImage(ImagePath, Username, GenderOfImage):
                 ?,
                 (getdate()))
     """, [ImagePath, Username, 1500, GenderOfImage])
+    
     cnxn.commit()
+    
+    cursor.execute("""
+        INSERT INTO [dbo].[Elo]
+                   ([ImagePath]
+                   ,[EloScore]
+                   ,[TimeStamp])
+             VALUES
+                   (?,
+                    ?,
+                    (getdate()))
+    """, [ImagePath, 1500])
+    
+    cnxn.commit()
+
+def getRandomImages(gender):
+    cursor.execute("""
+    SELECT TOP 2 * 
+    FROM Images
+    WHERE [GenderOfImage] = ?
+    ORDER BY NEWID()
+    """, gender)
+    
+    resp = cursor.fetchall()
+    img1 = resp[0][0]
+    img2 = resp[1][0]
+    return img1, img2
+
+def getVotes(username):
+    cursor.execute("""
+    SELECT [ImagePath1]
+          ,[ImagePath2]
+    FROM [dbo].[Vote]
+    WHERE [Username] = ?
+    """, username)
+    
+    resp = cursor.fetchall()
+
+    return resp
+
+def getContesters(username, gender):
+    votes = getVotes(username)
+    random = getRandomImages(gender)
+    
+    catRandom = random[0]+random[1]
+    catRandomSwitch = random[1]+random[0]
+    catVotes = ["".join(x) for x in votes]
+    
+    if catRandom in catVotes:
+        getContesters(username, gender)
+    elif catRandomSwitch in catVotes:
+        getContesters(username, gender)
+
+    return random
