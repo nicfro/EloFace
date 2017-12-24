@@ -66,9 +66,10 @@ def CreateNewUser(username, password, country, email, gender, birthYear):
 
 '''
 Login Function
+Logs in a user given a username and a password
+returns true if password is correct, false if wrong
+returns user dosent exist, if the user lookup returned nothing
 '''
-myctx = CryptContext(schemes=["sha256_crypt", "md5_crypt", "des_crypt"])
-
 def login(username, password):
     cursor.execute("""
     SELECT [HashedPwd]
@@ -86,7 +87,7 @@ def login(username, password):
         return "User dosen't exist"
 
 '''
-Writes reports to the database
+Writes reports to the database given a username and an imagepath
 '''
 def reportImage(username, ImagePath):
     cursor.execute("""
@@ -102,7 +103,7 @@ def reportImage(username, ImagePath):
     cnxn.commit()
 
 '''
-Calculating new elo scores
+fetches an images elo score
 '''
 
 def getEloScore(image):
@@ -114,6 +115,12 @@ def getEloScore(image):
     
     return cursor.fetchone()
 
+'''
+calculates new elo score.
+Given a winner and loser image
+A tie indicator (0 for no tie 1 for tie)
+k is the k value for the elo calculation
+'''
 def updateScore(winner, loser, tie, k):
     winner = getEloScore(winner)[0]
     loser = getEloScore(loser)[0]
@@ -130,8 +137,7 @@ def updateScore(winner, loser, tie, k):
     return winner, loser
 
 '''
-Fills in the vote table in the database
-Calls the update elo function in the end
+Votes and update elo
 '''
 def vote(username, imagepath1, imagepath2, result):
     cursor.execute("""
@@ -155,6 +161,11 @@ def vote(username, imagepath1, imagepath2, result):
 '''
 Writes the vote to the elo table
 Updates the Elo in the image table
+Takes in two imagepaths as arguments
+the result argument indicates the winner, eg
+image1 for imagepath 1 as winner
+image2 for imagepath 2 as winner
+tie for tie
 '''
 
 def updateElo(imagepath1, imagepath2, result):   
@@ -179,7 +190,6 @@ def updateElo(imagepath1, imagepath2, result):
     
     post1 = [[imagepath1, imagepath1Elo], [imagepath2, imagepath2Elo]]
     
-    print(post1)
     cursor.executemany("""
             INSERT INTO [dbo].[Elo]
                    ([ImagePath]
@@ -201,7 +211,8 @@ def updateElo(imagepath1, imagepath2, result):
     cnxn.commit()
 
 '''
-Updates the image table in the database
+Uploads an image to the database 
+Inserts an elo record of that image in the database
 '''
 def uploadImage(ImagePath, Username, GenderOfImage):
     cursor.execute("""
@@ -218,7 +229,6 @@ def uploadImage(ImagePath, Username, GenderOfImage):
                 ?,
                 (getdate()))
     """, [ImagePath, Username, 1500, GenderOfImage])
-    
     cnxn.commit()
     
     cursor.execute("""
@@ -230,10 +240,12 @@ def uploadImage(ImagePath, Username, GenderOfImage):
                    (?,
                     ?,
                     (getdate()))
-    """, [ImagePath, 1500])
-    
+    """, [ImagePath, 1500]) 
     cnxn.commit()
 
+'''
+Fetches 2 random images from the database
+'''
 def getRandomImages(gender):
     cursor.execute("""
     SELECT TOP 2 * 
@@ -247,6 +259,9 @@ def getRandomImages(gender):
     img2 = resp[1][0]
     return img1, img2
 
+'''
+Grabs all images a user has voted on
+'''
 def getVotes(username):
     cursor.execute("""
     SELECT [ImagePath1]
@@ -256,9 +271,11 @@ def getVotes(username):
     """, username)
     
     resp = cursor.fetchall()
-
     return resp
 
+'''
+Gets an image set the user has not previously voted for
+'''
 def getContesters(username, gender):
     votes = getVotes(username)
     random = getRandomImages(gender)
