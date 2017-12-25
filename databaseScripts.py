@@ -4,23 +4,24 @@ from passlib.context import CryptContext
 from random import randint
 myctx = CryptContext(schemes=["sha256_crypt", "md5_crypt", "des_crypt"])
 
-cnxn = pyodbc.connect("""
-        Driver={ODBC Driver 13 for SQL Server};
-        Server=tcp:rateme.database.windows.net,1433;
-        Database=RateMe;
-        Uid=Nicolai@rateme;
-        Pwd={Hejmor1!};
-        Encrypt=yes;
-        TrustServerCertificate=no;
-        Connection Timeout=30;
-        """
-    )
-cursor = cnxn.cursor()
+def connect():
+    cnxn = pyodbc.connect("""
+            Driver={ODBC Driver 13 for SQL Server};
+            Server=tcp:rateme.database.windows.net,1433;
+            Database=RateMe;
+            Uid=Nicolai@rateme;
+            Pwd={Hejmor1!};
+            Encrypt=yes;
+            TrustServerCertificate=no;
+            Connection Timeout=30;
+            """
+        )
+    return cnxn.cursor()
 
+cursor = connect()
 '''
 Create user in database
 '''
-
 def CreateNewUser(username, password, country, email, gender, birthYear):
     cursor.execute("""
                     SELECT 1
@@ -257,7 +258,7 @@ def getRandomImages(gender):
     resp = cursor.fetchall()
     img1 = resp[0][0]
     img2 = resp[1][0]
-    return img1, img2
+    return [img1, img2]
 
 '''
 Grabs all images a user has voted on

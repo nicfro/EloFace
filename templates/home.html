@@ -1,9 +1,54 @@
 <!DOCTYPE html>
+
 <html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
   <body>
-   <div class="home">
-     <h1>About me</h1>
-     <p>This website was built with Python via the Flask framework.</p>
-   </div>
+	{% extends "layout.html" %}
+	{% block content %}
+	<div class="home">
+	  <h1>A Python product</h1>
+	  <p>This website was built with Python via the Flask framework.</p>
+	  <ul>
+	  <li>
+	    <img src={{ images[0] }} width="256" height="256" id="img1">
+		<img src={{ images[1] }} width="256" height="256" id="img2">
+	  </li>
+	  <form action="/vote" method="post">
+	    <button name="CastVote" value={{ images[0] }}>Vote for image 1</button>
+		<button name="CastVote" value={{ images[1] }}>Vote for image 2</button>
+	  </form>
+	  <form action="/report" method="post">
+	    <button name="CastReport" value={{ images[0] }}>Report image 1</button>
+		<button name="CastReport" value={{ images[1] }}>Report image 2</button>
+	  </form>
+	  <form action="/vote" method="post">
+	    <button name="CastVote" value="tie">Tie</button>
+	  </form>
+      </ul>
+	</div>
+	<script type="text/javascript">
+	function sendData(choice) {
+	var data 
+	var choice
+
+	var pic1 = $('#img1').attr('src')
+	var pic2 = $('#img2').attr('src')
+	
+	info = [choice, pic1, pic2];
+
+	$.ajax({
+	  type: "POST",
+	  url: "/vote",
+	  data: info,
+	  dataType: "json"
+	});
+
+	}
+	
+	</script>
+	{% endblock %}
   </body>
 </html>
+
