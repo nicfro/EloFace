@@ -275,7 +275,7 @@ def getVotes(username):
     return resp
 
 '''
-Gets an image set the user has not previously voted for
+Get 2 images set the user has not previously voted for
 '''
 def getContesters(username, gender):
     votes = getVotes(username)

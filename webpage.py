@@ -8,15 +8,12 @@ cursor = connect()
 @app.route('/')
 def home():
 	images = list(getContesters("nicolai", "female"))
-	#images = list(getRandomImages("female"))
 	images = ["https://s3-eu-west-1.amazonaws.com/ratemegirl/"+s for s in images]
 	return render_template('home.html', images=images)
 
 @app.route('/vote', methods = ['POST'])
 def vote():
-    #vote = request.form['CastVote']
     content = request.get_json()
-  	#votes = request.getContes
     print("voted for: ",content)
     return redirect('/')
 
