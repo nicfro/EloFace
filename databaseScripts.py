@@ -16,8 +16,10 @@ def connect():
             Connection Timeout=30;
             """
         )
+
     return cnxn.cursor()
 
+#hehehe
 cursor = connect()
 '''
 Create user in database
@@ -33,7 +35,10 @@ def CreateNewUser(username, password, country, email, gender, birthYear):
         return "User already exists"
     else:
         myctx = CryptContext(schemes=["sha256_crypt", "md5_crypt", "des_crypt"])
-        salt = str(randint(10000,200000))
+        ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        salt=[]
+        [salt.append(random.choice(ALPHABET)) for x in range(16)]
+        "".join(salt)
         hash1 = myctx.hash(password+salt)
         
         Username = username.lower()
@@ -291,3 +296,11 @@ def getContesters(username, gender):
         getContesters(username, gender)
 
     return random
+
+#ADD S3 bucket upload
+
+#Collect reported images
+
+#Delete reported images
+
+#MAKE USERNAMES ONLY ALPHABETICAL AND NUMERICAL

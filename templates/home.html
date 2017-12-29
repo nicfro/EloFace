@@ -12,19 +12,17 @@
 	  <p>This website was built with Python via the Flask framework.</p>
 	  <ul>
 	  <li>
-	    <img src={{ images[0] }} width="256" height="256" id="img1">
-		<img src={{ images[1] }} width="256" height="256" id="img2">
+	    <img src={{ images[0] }} width="256" height="256" id="image1">
+		<img src={{ images[1] }} width="256" height="256" id="image2">
 	  </li>
 	  <form action="/vote" method="post">
-	    <button name="CastVote" value={{ images[0] }}>Vote for image 1</button>
-		<button name="CastVote" value={{ images[1] }}>Vote for image 2</button>
+	  	<input id="vote1" type="button" value="Vote Image 1" onclick="sendData('image1');" />
+	  	<input id="vote2" type="button" value="Vote Image 2" onclick="sendData('image2');" />
+	  	<input id="tie" type="button" value="tie" onclick="sendData('tie');" />
 	  </form>
 	  <form action="/report" method="post">
 	    <button name="CastReport" value={{ images[0] }}>Report image 1</button>
 		<button name="CastReport" value={{ images[1] }}>Report image 2</button>
-	  </form>
-	  <form action="/vote" method="post">
-	    <button name="CastVote" value="tie">Tie</button>
 	  </form>
       </ul>
 	</div>
@@ -32,11 +30,14 @@
 	function sendData(choice) {
 	var data 
 	var choice
+	var info = {}
 
-	var pic1 = $('#img1').attr('src')
-	var pic2 = $('#img2').attr('src')
+	var pic1 = $('#image1').attr('src')
+	var pic2 = $('#image2').attr('src')
 	
-	info = [choice, pic1, pic2];
+	info.choice = choice
+	info.pic1 = pic1
+	info.pic2 = pic2
 
 	$.ajax({
 	  type: "POST",
