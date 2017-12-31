@@ -3,12 +3,13 @@
 <html>
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="{{url_for('static', filename='javaScriptFunctions.js')}}"></script>
 </head>
   <body>
 	{% extends "layout.html" %}
 	{% block content %}
 	<div class="home">
-	  <h1>A Python product</h1>
+	  <h1>Rate Me</h1>
 	  <p>This website was built with Python via the Flask framework.</p>
 	  <ul>
 	  <li>
@@ -16,9 +17,9 @@
 		<img src={{ images[1] }} width="256" height="256" id="image2">
 	  </li>
 	  <form action="/vote" method="post">
-	  	<input id="vote1" type="button" value="Vote Image 1" onclick="sendData('image1');" />
-	  	<input id="vote2" type="button" value="Vote Image 2" onclick="sendData('image2');" />
-	  	<input id="tie" type="button" value="tie" onclick="sendData('tie');" />
+	  	<input id="vote1" type="button" value="Vote Image 1" onclick="sendVoteData('image1');" />
+	  	<input id="vote2" type="button" value="Vote Image 2" onclick="sendVoteData('image2');" />
+	  	<input id="tie" type="button" value="tie" onclick="sendVoteData('tie');" />
 	  </form>
 	  <form action="/report" method="post">
 	    <button name="CastReport" value={{ images[0] }}>Report image 1</button>
@@ -26,29 +27,6 @@
 	  </form>
       </ul>
 	</div>
-	<script type="text/javascript">
-	function sendData(choice) {
-	var data 
-	var choice
-	var info = {}
-
-	var pic1 = $('#image1').attr('src')
-	var pic2 = $('#image2').attr('src')
-	
-	info.choice = choice
-	info.pic1 = pic1
-	info.pic2 = pic2
-
-	$.ajax({
-	  type: "POST",
-	  url: "/vote",
-	  data: info,
-	  dataType: "json"
-	});
-
-	}
-	
-	</script>
 	{% endblock %}
   </body>
 </html>

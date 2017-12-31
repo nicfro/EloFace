@@ -1,30 +1,19 @@
 import pyodbc
 import datetime
 from passlib.context import CryptContext
-from random import randint
+import random
 myctx = CryptContext(schemes=["sha256_crypt", "md5_crypt", "des_crypt"])
 
 def connect():
-    cnxn = pyodbc.connect("""
-            Driver={ODBC Driver 13 for SQL Server};
-            Server=tcp:rateme.database.windows.net,1433;
-            Database=RateMe;
-            Uid=Nicolai@rateme;
-            Pwd={Hejmor1!};
-            Encrypt=yes;
-            TrustServerCertificate=no;
-            Connection Timeout=30;
-            """
-        )
-
+    cnxn = pyodbc.connect(r'Driver={SQL Server};Server=.\SQLEXPRESS;Database=RateMe;Trusted_Connection=yes;')
     return cnxn.cursor()
 
-#hehehe
 cursor = connect()
 '''
 Create user in database
 '''
-def CreateNewUser(username, password, country, email, gender, birthYear):
+
+def userExists(username):
     cursor.execute("""
                     SELECT 1
                     FROM [dbo].[Users]
@@ -32,43 +21,43 @@ def CreateNewUser(username, password, country, email, gender, birthYear):
                    """, [username])
     userExists = cursor.rowcount != 0
     if userExists:
-        return "User already exists"
+        return True
     else:
-        myctx = CryptContext(schemes=["sha256_crypt", "md5_crypt", "des_crypt"])
-        ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        salt=[]
-        [salt.append(random.choice(ALPHABET)) for x in range(16)]
-        "".join(salt)
-        hash1 = myctx.hash(password+salt)
-        
-        Username = username.lower()
-        HashedPwd = hash1
-        PwdSalt = salt
-        Country = country
-        Email = email
-        Gender = gender
-        BirthYear = birthYear
-        cursor.execute("""
-            INSERT INTO [dbo].[Users]
-                   ([Username]
-                   ,[HashedPwd]
-                   ,[PwdSalt]
-                   ,[Country]
-                   ,[Email]
-                   ,[Gender]
-                   ,[BirthYear]
-                   ,[TimeStamp])
-             VALUES
-                   (?,
-                    ?,
-                    ?,
-                    ?,
-                    ?,
-                    ?,
-                    ?,
-                    (getdate()))
-        """, [Username, HashedPwd, PwdSalt, Country, Email, Gender, BirthYear])
-        cnxn.commit()
+        return False
+
+
+def CreateNewUser(username, password, country, email, gender, bday):
+    myctx = CryptContext(schemes=["sha256_crypt", "md5_crypt", "des_crypt"])
+    ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    salt=[]
+    [salt.append(random.choice(ALPHABET)) for x in range(16)]
+    salt = "".join(salt)
+    hash1 = myctx.hash(password+salt)
+    
+    username = username.lower()
+    HashedPwd = hash1
+    PwdSalt = salt
+    cursor.execute("""
+        INSERT INTO [dbo].[Users]
+               ([Username]
+               ,[HashedPwd]
+               ,[PwdSalt]
+               ,[Country]
+               ,[Email]
+               ,[Gender]
+               ,[BirthYear]
+               ,[TimeStamp])
+         VALUES
+               (?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                (getdate()))
+    """, [username, HashedPwd, PwdSalt, country, email, gender, bday])
+    cursor.commit()
 
 '''
 Login Function
@@ -76,7 +65,7 @@ Logs in a user given a username and a password
 returns true if password is correct, false if wrong
 returns user dosent exist, if the user lookup returned nothing
 '''
-def login(username, password):
+def userLogin(username, password):
     cursor.execute("""
     SELECT [HashedPwd]
           ,[PwdSalt]
@@ -90,12 +79,12 @@ def login(username, password):
         salt = resp[1]
         return myctx.verify(password+salt, hash1)
     except:
-        return "User dosen't exist"
+        return False
 
 '''
 Writes reports to the database given a username and an imagepath
 '''
-def reportImage(username, ImagePath):
+def reportImage(username, imagePath):
     cursor.execute("""
         INSERT INTO [dbo].[Report]
                    ([Username]
@@ -105,8 +94,8 @@ def reportImage(username, ImagePath):
                    (?,
                     ?,
                     (getdate()))
-    """, [Username, ImagePath])
-    cnxn.commit()
+    """, [username, imagePath])
+    cursor.commit()
 
 '''
 fetches an images elo score
@@ -145,7 +134,7 @@ def updateScore(winner, loser, tie, k):
 '''
 Votes and update elo
 '''
-def vote(username, imagepath1, imagepath2, result):
+def ratePictures(username, imagepath1, imagepath2, result):
     cursor.execute("""
             INSERT INTO [dbo].[Vote]
                    ([Username]
@@ -160,7 +149,7 @@ def vote(username, imagepath1, imagepath2, result):
                     ?,
                     (getdate()))
         """, [username, imagepath1, imagepath2, result])
-    cnxn.commit()
+    cursor.commit()
     
     updateElo(imagepath1, imagepath2, result)
 
@@ -206,7 +195,7 @@ def updateElo(imagepath1, imagepath2, result):
                     ?,
                     (getdate()))
         """, post1)
-    cnxn.commit()
+    cursor.commit()
     
     post2 = [[imagepath1Elo, imagepath1], [imagepath2Elo, imagepath2]]
     cursor.executemany("""
@@ -214,7 +203,7 @@ def updateElo(imagepath1, imagepath2, result):
                SET [EloScore] = ?
              WHERE [ImagePath] = ?
         """, post2)
-    cnxn.commit()
+    cursor.commit()
 
 '''
 Uploads an image to the database 
@@ -235,7 +224,7 @@ def uploadImage(ImagePath, Username, GenderOfImage):
                 ?,
                 (getdate()))
     """, [ImagePath, Username, 1500, GenderOfImage])
-    cnxn.commit()
+    cursor.commit()
     
     cursor.execute("""
         INSERT INTO [dbo].[Elo]
@@ -247,7 +236,7 @@ def uploadImage(ImagePath, Username, GenderOfImage):
                     ?,
                     (getdate()))
     """, [ImagePath, 1500]) 
-    cnxn.commit()
+    cursor.commit()
 
 '''
 Fetches 2 random images from the database
