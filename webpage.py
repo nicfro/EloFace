@@ -90,9 +90,9 @@ def createNewUser():
     if len(errors) == 0:
         print("creating user with: ", username, password, country, email, gender, bday)
         CreateNewUser(username, password, country, email, gender, bday)
-        #session['logged_in'] = True
-        #session['username'] = username
-        return redirect('/')
+        session['logged_in'] = True
+        session['username'] = username
+        return Response(home(),mimetype = "text/html")
     else:
         json_data = json.dumps(errors)
         return Response(json_data ,mimetype = "application/json") 

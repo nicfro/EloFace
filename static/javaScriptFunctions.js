@@ -34,14 +34,20 @@ function sendCreateNewUserData() {
 	  type: "POST",
 	  url: "/createNewUser",
 	  data: info,
-	  dataType: "json",
-	  success: function(data) {
-      writewarning(data); 
-    }
+	  success: function(response, status, xhr){
+	    var ct = xhr.getResponseHeader("content-type") || "";
+	    if (ct.indexOf('text/html') > -1) {
+	    //fix so it loads response instead of redirects
+	      window.location.href = "/";
+	    }
+	    if (ct.indexOf('json') > -1) {
+      	  writewarning(response);
+	  	}
+      }
 	});
 }
 
-function sendLogin() {
+function sendLogin(datatype) {
 	var data 
 	var info = {}
 
@@ -52,16 +58,13 @@ function sendLogin() {
 	  type: "POST",
 	  url: "/login",
 	  data: info,
-	  dataType: "json",
-	  success: function(response, status, xhr){ 
+	  success: function(response, status, xhr){
 	    var ct = xhr.getResponseHeader("content-type") || "";
-	    console.log(xhr.getResponseHeader("content-type"))
-	    if (ct.indexOf('text/html; charset=utf-8') > -1) {
-	   	  console.log("KOM NU")
-	      window.location.href = "http://stackoverflow.com";
+	    if (ct.indexOf('text/html') > -1) {
+	    //fix so it loads response instead of redirects
+	      window.location.href = "/";
 	    }
 	    if (ct.indexOf('json') > -1) {
-	      console.log("xdxd")
       	  writewarning(response);
 	  	}
       }
@@ -79,4 +82,3 @@ function writewarning(errors){
 		}
 	}
 }
-
