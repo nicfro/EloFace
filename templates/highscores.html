@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="{{url_for('static', filename='javaScriptFunctions.js')}}"></script>
+</head>
+  <body>
+	{% extends "layout.html" %}
+	{% block content %}
+	<div class="highscores">
+	  <h1>Highscores</h1>
+	  <p>Here are the best performing female pictures</p>
+	  <ul>
+	  {% for highscore in highscores %}
+	  <li>
+	    <img src={{ highscore[0] }} width="250" height="250" id="image1">
+	    <p>{{ highscore[1] }}</p>
+	  </li>
+	  {% endfor %}
+      </ul>
+	</div>
+	{% endblock %}
+  </body>
+</html>
+

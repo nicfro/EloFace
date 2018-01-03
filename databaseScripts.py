@@ -2,6 +2,9 @@ import pyodbc
 import datetime
 from passlib.context import CryptContext
 import random
+import csv
+import tinys3
+
 myctx = CryptContext(schemes=["sha256_crypt", "md5_crypt", "des_crypt"])
 
 def connect():
@@ -9,10 +12,40 @@ def connect():
     return cnxn.cursor()
 
 cursor = connect()
-'''
-Create user in database
-'''
 
+def getS3Credentials():
+    with open('credentials.csv', 'r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            access_key = row[2]
+            secret_key = row[3]
+    return access_key, secret_key
+
+access_key, secret_key = getS3Credentials()
+
+'''
+Upload image to S3 bucket
+'''
+def uploadS3Image(image, fileName):
+    conn = tinys3.Connection(access_key,secret_key,default_bucket='ratemegirl')
+    conn.upload(fileName,image)
+
+'''
+Delete file from S3 bucket
+'''
+def suspendS3Image(filename):
+    conn = tinys3.Connection(access_key,secret_key,default_bucket='ratemegirl')
+    conn.copy(filename,"ratemegirl",'suspended'+filename[3:])
+    conn.delete(filename)
+    cursor.execute("""
+                UPDATE [dbo].[Report]
+                   SET [Suspended] = 1
+                 WHERE ImagePath = ?
+                   """, filename)
+
+'''
+Check if user exists in database
+'''
 def userExists(username):
     cursor.execute("""
                     SELECT 1
@@ -26,7 +59,7 @@ def userExists(username):
         return False
 
 
-def CreateNewUser(username, password, country, email, gender, bday):
+def CreateNewUser(username, password, country, email, gender, bday, race):
     myctx = CryptContext(schemes=["sha256_crypt", "md5_crypt", "des_crypt"])
     ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     salt=[]
@@ -46,6 +79,7 @@ def CreateNewUser(username, password, country, email, gender, bday):
                ,[Email]
                ,[Gender]
                ,[BirthYear]
+               ,[Race]
                ,[TimeStamp])
          VALUES
                (?,
@@ -55,8 +89,9 @@ def CreateNewUser(username, password, country, email, gender, bday):
                 ?,
                 ?,
                 ?,
+                ?,
                 (getdate()))
-    """, [username, HashedPwd, PwdSalt, country, email, gender, bday])
+    """, [username, HashedPwd, PwdSalt, country, email, gender, bday, race])
     cursor.commit()
 
 '''
@@ -89,11 +124,13 @@ def reportImage(username, imagePath):
         INSERT INTO [dbo].[Report]
                    ([Username]
                    ,[ImagePath]
-                   ,[TimeStamp])
+                   ,[TimeStamp]
+                   ,[Suspended])
              VALUES
                    (?,
                     ?,
-                    (getdate()))
+                    (getdate()),
+                    0)
     """, [username, imagePath])
     cursor.commit()
 
@@ -209,21 +246,25 @@ def updateElo(imagepath1, imagepath2, result):
 Uploads an image to the database 
 Inserts an elo record of that image in the database
 '''
-def uploadImage(ImagePath, Username, GenderOfImage):
+def uploadImage(ImagePath, Username, GenderOfImage, Race, Age):
     cursor.execute("""
         INSERT INTO [dbo].[Images]
                ([ImagePath]
                ,[Username]
                ,[EloScore]
                ,[GenderOfImage]
+               ,[Race]
+               ,[AgeGroup]
                ,[TimeStamp])
          VALUES
                (?,
                 ?,
                 ?,
                 ?,
+                ?,
+                ?,
                 (getdate()))
-    """, [ImagePath, Username, 1500, GenderOfImage])
+    """, [ImagePath, Username, 1500, GenderOfImage, Race, Age])
     cursor.commit()
     
     cursor.execute("""
@@ -286,10 +327,53 @@ def getContesters(username, gender):
 
     return random
 
-#ADD S3 bucket upload
+def getNewFileName():
+    cursor.execute("""
+    SELECT MAX([ImagePath])
+    FROM [RateMe].[dbo].[Images]
+    """)
+    
+    resp = cursor.fetchone()[0]
+    firstPart = resp[:-5]
+    addOne = str(int(resp[-5])+1)
+    lastPart = resp[-4:]
+    return firstPart+addOne+lastPart
 
-#Collect reported images
+def suspendImages():
+    cursor.execute("""
+    SELECT Distinct
+    [ImagePath]
+    FROM [RateMe].[dbo].[Report]
+    WHERE suspended = 0
+    """)
+    resp = cursor.fetchall()
+    resp = [x[0] for x in resp]
+    suspended = []
+    for image in resp:
+        suspendS3Image(image)
+        suspended.append(image)
+    print("Suspended following images:")
+    print(suspended)
 
-#Delete reported images
+def getHighscores(gender):
+    cursor.execute("""
+        SELECT TOP(10) [ImagePath],
+                       [EloScore]
+        FROM [RateMe].[dbo].[Images]
+        WHERE GenderOfImage = ?
+        ORDER BY EloScore DESC
+    """, gender)
+    resp = cursor.fetchall()
+    return resp
 
-#MAKE USERNAMES ONLY ALPHABETICAL AND NUMERICAL
+#Better the deletion of reported images -> Add admin site 
+
+#handle quality of uploaded images
+
+#handle duplicates of uploaded images
+
+#add feedback site
+
+#add solid face detection
+
+#add voting on males

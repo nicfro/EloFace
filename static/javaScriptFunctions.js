@@ -1,5 +1,4 @@
 function sendVoteData(choice) {
-	var data 
 	var choice
 	var info = {}
 
@@ -20,7 +19,6 @@ function sendVoteData(choice) {
 }
 
 function sendCreateNewUserData() {
-	var data 
 	var info = {}
 
 	info.username = username.value
@@ -29,6 +27,7 @@ function sendCreateNewUserData() {
 	info.email = email.value
 	info.gender = gender.value
 	info.bday = bday.value 
+	info.race = race.value
 
 	$.ajax({
 	  type: "POST",
@@ -37,7 +36,6 @@ function sendCreateNewUserData() {
 	  success: function(response, status, xhr){
 	    var ct = xhr.getResponseHeader("content-type") || "";
 	    if (ct.indexOf('text/html') > -1) {
-	    //fix so it loads response instead of redirects
 	      window.location.href = "/";
 	    }
 	    if (ct.indexOf('json') > -1) {
@@ -48,7 +46,6 @@ function sendCreateNewUserData() {
 }
 
 function sendLogin(datatype) {
-	var data 
 	var info = {}
 
 	info.username = username.value
@@ -71,6 +68,24 @@ function sendLogin(datatype) {
 	});
 }
 
+function sendImage(imageData) {
+	var info = {}
+	info.upload = imageData
+	info.gender = gender.value
+	info.race = race.value
+	info.ageGroup = ageGroup.value
+	
+	$.ajax({
+	  type: "POST",
+	  url: "/uploadToS3",
+	  data: info,
+	  enctype: 'multipart/form-data',
+	  dataType: "json",
+	  success: function( returnedData ) {
+         $( '#warning' ).text("Image uploaded successfully");
+  }
+	});
+}
 function writewarning(errors){
 	$('#warning').html("")
 	for (var key in errors) {
@@ -82,3 +97,4 @@ function writewarning(errors){
 		}
 	}
 }
+

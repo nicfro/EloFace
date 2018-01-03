@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>cropit</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script src="{{url_for('static', filename='jquery.cropit.js')}}"></script>
+    <script src="{{url_for('static', filename='javaScriptFunctions.js')}}"></script>
+    <style>
+      .cropit-preview {
+        background-color: #f8f8f8;
+        background-size: cover;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        margin-top: 7px;
+        width: 250px;
+        height: 250px;
+      }
+
+      .cropit-preview-image-container {
+        cursor: move;
+      }
+
+      .image-size-label {
+        margin-top: 10px;
+      }
+
+      input, .export {
+        display: block;
+      }
+
+      button {
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+  {% extends "layout.html" %}
+  {% block content %}
+    <div class="image-editor">
+      <input type="file" class="cropit-image-input">
+      <div class="cropit-preview"></div>
+      <div class="image-size-label">
+        Resize image
+    </div>
+      <input type="range" class="cropit-image-zoom-input">
+      <button class="export">Export</button>
+    </div>
+    <div class="control-group">
+      <select id="gender" name="gender">
+        <option value="Please select image gender" selected>Select image gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+      </select>
+    </div>
+      <div class="control-group">
+      <select id="race" name="race">
+          <option value="Please select image ethnicity" selected>Select image ethnicity</option>
+          <option value="African">African</option>
+          <option value="Indian asian">Arabian</option>
+          <option value="Asian">Asian</option>
+          <option value="Caucasian">Caucasian</option>
+          <option value="Hispanic">Hispanic</option>
+          <option value="Indian asian">Indian asian</option>
+          <option value="Other">Other</option>
+      </select>
+      </div>
+      <div class="control-group">
+      <select id="ageGroup" name="ageGroup">
+          <option value="Please select image age group" selected>Select image age group</option>
+          <option value="16-21">16-21</option>
+          <option value="22-30">22-30</option>
+          <option value="31-45">31-45</option>
+          <option value="46-65">46-65</option>
+          <option value="65+">65+</option>
+      </select>
+      </div>
+
+    <script>
+      $(function() {
+        $('.image-editor').cropit({
+        });
+
+        $('.export').click(function() {
+          var imageData = $('.image-editor').cropit('export');
+          sendImage(imageData);
+        });
+      });
+    </script>
+    {% endblock %}
+  </body>
+</html>

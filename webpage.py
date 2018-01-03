@@ -2,8 +2,12 @@ from flask import Flask, flash, redirect, render_template, request, session, abo
 import os
 import json
 from validate_email import validate_email
-from databaseScripts import connect, getRandomImages, getContesters, reportImage, ratePictures, userLogin, userExists, CreateNewUser
+from databaseScripts import connect, getHighscores, uploadImage, getRandomImages, getContesters, reportImage, ratePictures, userLogin, userExists, CreateNewUser, uploadS3Image, getNewFileName
 from datetime import datetime
+import cv2
+from io import BytesIO
+import base64
+import re
 
 app = Flask(__name__)
 cursor = connect()
@@ -25,7 +29,7 @@ def login():
 @app.route("/logout")
 def logout():
     session['logged_in'] = False
-    return home()
+    return redirect('/')
 
 @app.route('/')
 def home():
@@ -69,8 +73,8 @@ def createNewUser():
     email = request.form['email']
     gender = request.form['gender']
     bday = request.form['bday']
+    race = request.form['race']
 
-    print(username, password, country, email, gender, bday)
     errors = {}
     
     try:
@@ -86,18 +90,48 @@ def createNewUser():
         errors["passwordLength"] = "Password must be 6 characters or longer"
     if not validate_email(email):
         errors["validEmail"] = "Please enter valid email"
+    if gender == "Please select your gender":
+        errors["gender"] = "Please select your gender"
+    if country == "Please select your country":
+        errors["country"] = "Please select your country"
+    if race == "Please select your ethnicity":
+        errors["ethnicity"] = "Please select your ethnicity"
 
     if len(errors) == 0:
-        print("creating user with: ", username, password, country, email, gender, bday)
-        CreateNewUser(username, password, country, email, gender, bday)
+        CreateNewUser(username, password, country, email, gender, bday, race)
         session['logged_in'] = True
         session['username'] = username
         return Response(home(),mimetype = "text/html")
     else:
         json_data = json.dumps(errors)
         return Response(json_data ,mimetype = "application/json") 
-        
+  
+@app.route('/upload/')      
+def upload():
+    return render_template('upload.html')
+
+@app.route('/uploadToS3', methods = ['POST'])
+def uploadToS3():
+    username = session.get('username')
+    image = request.form['upload']
+    gender = request.form['gender']
+    race = request.form['race']
+    ageGroup = request.form['ageGroup']
+    fileName = getNewFileName()
+    image_data = re.sub('^data:image/.+;base64,', '', image)
+    encoded = BytesIO(base64.b64decode(image_data.encode()))
+
+    uploadS3Image(encoded, fileName)
+    uploadImage(fileName, username, gender, race, ageGroup)
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
     
+@app.route('/highscores/')   
+def highscores():
+    highscores = getHighscores("female")
+    highscores = [["https://s3-eu-west-1.amazonaws.com/ratemegirl/"+s[0],s[1]] for s in highscores]
+    return render_template('highscores.html', highscores=highscores)
+
+
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)
     app.run(debug=True)
