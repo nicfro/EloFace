@@ -14,11 +14,11 @@ def connect():
 cursor = connect()
 
 def getS3Credentials():
-    with open('credentials.csv', 'r') as f:
+    with open('accessKeys.csv', 'r') as f:
         reader = csv.reader(f)
         for row in reader:
-            access_key = row[2]
-            secret_key = row[3]
+            access_key = row[0]
+            secret_key = row[1]
     return access_key, secret_key
 
 access_key, secret_key = getS3Credentials()
@@ -30,18 +30,17 @@ def uploadS3Image(image, fileName):
     conn = tinys3.Connection(access_key,secret_key,default_bucket='ratemegirl')
     conn.upload(fileName,image)
 
-'''
-Delete file from S3 bucket
-'''
-def suspendS3Image(filename):
-    conn = tinys3.Connection(access_key,secret_key,default_bucket='ratemegirl')
-    conn.copy(filename,"ratemegirl",'suspended'+filename[3:])
-    conn.delete(filename)
+def suspendImages():
     cursor.execute("""
-                UPDATE [dbo].[Report]
-                   SET [Suspended] = 1
-                 WHERE ImagePath = ?
-                   """, filename)
+    UPDATE [dbo].[Images]
+    SET [Suspended] = 1
+    WHERE ImagePath in (SELECT images.ImagePath
+                        FROM Images
+                        WHERE (SELECT count(*)
+                        FROM report
+                        WHERE report.ImagePath = images.ImagePath) > 1)
+    """)
+    cursor.commit()
 
 '''
 Check if user exists in database
@@ -255,6 +254,7 @@ def uploadImage(ImagePath, Username, GenderOfImage, Race, Age):
                ,[GenderOfImage]
                ,[Race]
                ,[AgeGroup]
+               ,[Suspended]
                ,[TimeStamp])
          VALUES
                (?,
@@ -263,6 +263,7 @@ def uploadImage(ImagePath, Username, GenderOfImage, Race, Age):
                 ?,
                 ?,
                 ?,
+                0,
                 (getdate()))
     """, [ImagePath, Username, 1500, GenderOfImage, Race, Age])
     cursor.commit()
@@ -286,7 +287,7 @@ def getRandomImages(gender):
     cursor.execute("""
     SELECT TOP 2 * 
     FROM Images
-    WHERE [GenderOfImage] = ?
+    WHERE ([GenderOfImage] = ?) and (Suspended = 0)
     ORDER BY NEWID()
     """, gender)
     
@@ -339,34 +340,22 @@ def getNewFileName():
     lastPart = resp[-4:]
     return firstPart+addOne+lastPart
 
-def suspendImages():
-    cursor.execute("""
-    SELECT Distinct
-    [ImagePath]
-    FROM [RateMe].[dbo].[Report]
-    WHERE suspended = 0
-    """)
-    resp = cursor.fetchall()
-    resp = [x[0] for x in resp]
-    suspended = []
-    for image in resp:
-        suspendS3Image(image)
-        suspended.append(image)
-    print("Suspended following images:")
-    print(suspended)
-
 def getHighscores(gender):
     cursor.execute("""
         SELECT TOP(10) [ImagePath],
                        [EloScore]
         FROM [RateMe].[dbo].[Images]
-        WHERE GenderOfImage = ?
+        WHERE (GenderOfImage = ?) and (Suspended = 0)
         ORDER BY EloScore DESC
     """, gender)
     resp = cursor.fetchall()
     return resp
 
+#suspendImages()
+
 #Better the deletion of reported images -> Add admin site 
+
+#Finalize how to site
 
 #handle quality of uploaded images
 

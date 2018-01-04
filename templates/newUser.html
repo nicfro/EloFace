@@ -19,12 +19,13 @@
 			<input type="text" class="login-field" value="" placeholder="username" id="username" name="username">
 			<label class="login-field-icon fui-user" for="login-name"></label>
 			</div>
-
+			<div id="usernameAlphanumericError" name="usernameAlphanumericError" class="warningFields"></div>
+			<div id="usernameExistsError" name="usernameExistsError" class="warningFields"></div>
 			<div class="control-group">
 			<input type="password" class="login-field" value="" placeholder="password" id="password" name="password">
 			<label class="login-field-icon fui-lock" for="login-pass"></label>
 			</div>
-
+			<div id="passwordLengthError" name="passwordLengthError" class="warningFields"></div>
 			<div class="control-group">
 			<select id="country" name="country">
 				<option value="Please select your country" selected>Select your country</option>
@@ -269,12 +270,12 @@
 			    <option value="Zimbabwe">Zimbabwe</option>
 			</select>
 			</div>
-
+			<div id="countryError" name="countryError" class="warningFields"></div>
 			<div class="control-group">
 			<input type="text" class="login-field" value="" placeholder="email" id="email" name = "email">
 			<label class="login-field-icon fui-lock" for="login-name"></label>
 			</div>
-
+			<div id="validEmailError" name="validEmailError" class="warningFields"></div>
 			<div class="control-group">
 			<select id="gender" name="gender">
 				<option value="Please select your gender" selected>Select your gender</option>
@@ -282,6 +283,7 @@
 			    <option value="female">Female</option>
 			</select>
 			</div>
+			<div id="genderError" name="genderError" class="warningFields"></div>
 		     <div class="control-group">
 		      <select id="race" name="race">
 		          <option value="Please select your ethnicity" selected>Select your ethnicity</option>
@@ -294,16 +296,15 @@
 		          <option value="Other">Other</option>
 		      </select>
 		      </div>
-
+			<div id="ethnicityError" name="ethnicityError" class="warningFields"></div>
 			<div class="control-group">
 			  <input type="date" id="bday" name="bday" max="2005-01-01" min="1900-01-01">
 			</div>
-
+			<div id="bdayError" name="bdayError" class="warningFields"></div>
             <input type="submit" value="Create User" class="btn btn-primary btn-large btn-block" onclick="sendCreateNewUserData()">
 		    <br>
 		</div>
 	</div>
 </div>
-<div id="warning" name="warning"></div>
 </body>
 </html>

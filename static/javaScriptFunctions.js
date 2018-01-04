@@ -87,13 +87,10 @@ function sendImage(imageData) {
 	});
 }
 function writewarning(errors){
-	$('#warning').html("")
+	$('.warningFields').empty()
 	for (var key in errors) {
 		if (errors.hasOwnProperty(key)) {
-			$('#warning').append("<p>")
-			$('#warning').append(errors[key])
-			$('#warning').append("</p>")
-			$('#warning').append("</br>")
+			$('#'+key).html("<p>"+errors[key]+"</p>")
 		}
 	}
 }

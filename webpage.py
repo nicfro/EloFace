@@ -57,9 +57,9 @@ def report():
     reportImage(username, imagePath)
     return redirect('/')
 
-@app.route('/about/')
-def about():
-	return render_template('about.html')
+@app.route('/howto/')
+def howto():
+	return render_template('howto.html')
 
 @app.route('/newUser/')
 def newUser():
@@ -80,22 +80,22 @@ def createNewUser():
     try:
         bday = datetime.strptime(bday, "%Y-%m-%d")
     except:
-        errors["bday"] = "Please enter your birthday"
+        errors["bdayError"] = "Please enter your birthday"
 
     if username.isalnum() != True:
-        errors["usernameAlphanumeric"] = "Username can only contain alphanumeric characters"
+        errors["usernameAlphanumericError"] = "Username can only contain alphanumeric characters"
     if userExists(username):
-        errors["usernameExists"] = "Username is taken, please choose another"
+        errors["usernameExistsError"] = "Username is taken, please choose another"
     if len(password) < 6:
-        errors["passwordLength"] = "Password must be 6 characters or longer"
+        errors["passwordLengthError"] = "Password must be 6 characters or longer"
     if not validate_email(email):
-        errors["validEmail"] = "Please enter valid email"
+        errors["validEmailError"] = "Please enter valid email"
     if gender == "Please select your gender":
-        errors["gender"] = "Please select your gender"
+        errors["genderError"] = "Please select your gender"
     if country == "Please select your country":
-        errors["country"] = "Please select your country"
+        errors["countryError"] = "Please select your country"
     if race == "Please select your ethnicity":
-        errors["ethnicity"] = "Please select your ethnicity"
+        errors["ethnicityError"] = "Please select your ethnicity"
 
     if len(errors) == 0:
         CreateNewUser(username, password, country, email, gender, bday, race)
