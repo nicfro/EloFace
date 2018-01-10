@@ -1,5 +1,4 @@
 import pyodbc
-import datetime
 from passlib.context import CryptContext
 import random
 import csv
@@ -30,7 +29,7 @@ def uploadS3Image(image, fileName):
     conn = tinys3.Connection(access_key,secret_key,default_bucket='ratemegirl')
     conn.upload(fileName,image)
 
-def suspendImages():
+def suspendImages(reports):
     cursor.execute("""
     UPDATE [dbo].[Images]
     SET [Suspended] = 1
@@ -38,8 +37,8 @@ def suspendImages():
                         FROM Images
                         WHERE (SELECT count(*)
                         FROM report
-                        WHERE report.ImagePath = images.ImagePath) > 1)
-    """)
+                        WHERE report.ImagePath = images.ImagePath) > ?)
+    """, reports)
     cursor.commit()
 
 '''

@@ -4,7 +4,6 @@ import json
 from validate_email import validate_email
 from databaseScripts import connect, getHighscores, uploadImage, getRandomImages, getContesters, reportImage, ratePictures, userLogin, userExists, CreateNewUser, uploadS3Image, getNewFileName
 from datetime import datetime
-import cv2
 from io import BytesIO
 import base64
 import re
