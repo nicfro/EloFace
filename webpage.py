@@ -149,9 +149,8 @@ def uploadToS3():
 @app.route('/highscores/')   
 def highscores():
     highscores = getHighscores("female")
-    highscores = [["https://s3-eu-west-1.amazonaws.com/ratemegirl/"+s[0],s[1]] for s in highscores]
+    highscores = [["https://s3-eu-west-1.amazonaws.com/ratemegirl/"+x[0],x[1], i] for i, x in enumerate(highscores, 1)]
     return render_template('highscores.html', highscores=highscores)
-
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)
