@@ -70,7 +70,9 @@ function sendLogin(datatype) {
 
 function sendImage(imageData) {
 	var info = {}
+
 	info.upload = imageData
+	console.log(imageData)
 	info.gender = gender.value
 	info.race = race.value
 	info.ageGroup = ageGroup.value
@@ -81,9 +83,17 @@ function sendImage(imageData) {
 	  data: info,
 	  enctype: 'multipart/form-data',
 	  dataType: "json",
-	  success: function( returnedData ) {
-         $( '#warning' ).text("Image uploaded successfully");
-  }
+
+	  success: function(response, status, xhr){
+	    var ct = xhr.getResponseHeader("content-type") || "";
+	    if (ct.indexOf('text/html') > -1) {
+	    //fix so it loads response instead of redirects
+	      window.location.href = "/";
+	    }
+	    if (ct.indexOf('json') > -1) {
+      	  writewarning(response);
+	  	}
+      }
 	});
 }
 function writewarning(errors){

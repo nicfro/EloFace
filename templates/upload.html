@@ -45,6 +45,8 @@
       <input type="range" class="cropit-image-zoom-input">
       <button class="export">Export</button>
     </div>
+    <div id="imageError" name="imageError" class="warningFields"></div>
+    <div id="usernameError" name="usernameError" class="warningFields"></div>
     <div class="control-group">
       <select id="gender" name="gender">
         <option value="Please select image gender" selected>Select image gender</option>
@@ -52,7 +54,9 @@
           <option value="female">Female</option>
       </select>
     </div>
-      <div class="control-group">
+    <div id="genderError" name="genderError" class="warningFields"></div> 
+
+    <div class="control-group">
       <select id="race" name="race">
           <option value="Please select image ethnicity" selected>Select image ethnicity</option>
           <option value="African">African</option>
@@ -64,6 +68,8 @@
           <option value="Other">Other</option>
       </select>
       </div>
+    <div id="ethnicityError" name="ethnicityError" class="warningFields"></div>
+
       <div class="control-group">
       <select id="ageGroup" name="ageGroup">
           <option value="Please select image age group" selected>Select image age group</option>
@@ -74,6 +80,7 @@
           <option value="65+">65+</option>
       </select>
       </div>
+      <div id="ageError" name="ageError" class="warningFields"></div> 
 
     <script>
       $(function() {

@@ -352,6 +352,10 @@ def getHighscores(gender):
 
 #suspendImages()
 
+#back button on create user site
+
+#error handling when uploading images
+
 #Better the deletion of reported images -> Add admin site 
 
 #Finalize how to site

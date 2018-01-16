@@ -111,19 +111,41 @@ def upload():
 
 @app.route('/uploadToS3', methods = ['POST'])
 def uploadToS3():
+    errors = {}
+
     username = session.get('username')
-    image = request.form['upload']
+    try:
+        image = request.form['upload']
+    except:
+        errors["imageError"] = "Please upload an image"
+
     gender = request.form['gender']
     race = request.form['race']
     ageGroup = request.form['ageGroup']
-    fileName = getNewFileName()
-    image_data = re.sub('^data:image/.+;base64,', '', image)
-    encoded = BytesIO(base64.b64decode(image_data.encode()))
 
-    uploadS3Image(encoded, fileName)
-    uploadImage(fileName, username, gender, race, ageGroup)
-    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
-    
+    print(gender, race)
+    if not userExists(username):
+        errors["usernameError"] = "Username does not exist"
+    if gender == "Please select image gender":
+        errors["genderError"] = "Please select image gender"
+    if race == "Please select image ethnicity":
+        errors["ethnicityError"] = "Please select image ethnicity"
+    if ageGroup == "Please select image age group":
+        errors["ageError"] = "Please select image age group"
+    if len(errors) == 0:
+        fileName = getNewFileName()
+        image_data = re.sub('^data:image/.+;base64,', '', image)
+        encoded = BytesIO(base64.b64decode(image_data.encode()))
+
+        uploadS3Image(encoded, fileName)
+        uploadImage(fileName, username, gender, race, ageGroup)
+        resp = json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+        return resp    
+    else:
+        print(errors)
+        json_data = json.dumps(errors)
+        return Response(json_data ,mimetype = "application/json") 
+
 @app.route('/highscores/')   
 def highscores():
     highscores = getHighscores("female")
