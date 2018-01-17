@@ -1,5 +1,6 @@
 .navbar + .container {
 	margin-top: 2rem;
+	margin-bottom: 5rem;
 }
 
 body.outside {
@@ -116,7 +117,7 @@ body.outside {
 }
 
 .image-editor {
-	background-color: #eee;
+	background-color: #fafafa;
 	padding: 20px;
 	border-radius: 6px;
 	margin: 20px 0;
