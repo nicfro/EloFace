@@ -104,4 +104,3 @@ function writewarning(errors){
 		}
 	}
 }
-
