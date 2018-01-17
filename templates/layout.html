@@ -3,26 +3,25 @@
   <head>
     <meta charset="utf-8">
     <title>Rate Me</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="{{url_for('static', filename='jquery.cropit.js')}}"></script>
     <script src="{{url_for('static', filename='javaScriptFunctions.js')}}"></script>
   </head>
   <body>
-    <header>
-      <div class="container">
-        <h1 class="logo">Rate Me</h1>
-        <strong><nav>
-          <ul class="menu">
-            <li><a href="{{ url_for('home') }}">Vote</a></li>
-            <li><a href="{{ url_for('howto') }}">About</a></li>
-            <li><a href="{{ url_for('upload') }}">Upload Image</a></li>
-            <li><a href="{{ url_for('highscores') }}">Highscores</a></li>
-            <li><a href="{{ url_for('logout') }}">Logout</a></li>
-          </ul>
-        </nav></strong>
-      </div>
-    </header>
-    <div id="warning" name="warning"></div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="{{ url_for('home') }}">Rate Me</a>
+
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Vote</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('howto') }}">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('upload') }}">Upload Image</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('highscores') }}">High Scores</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
+      </ul>
+    </nav>
+
     <div class="container">
       {% block content %}
       {% endblock %}
