@@ -341,7 +341,7 @@ def getNewFileName():
 
 def getHighscores(gender):
     cursor.execute("""
-        SELECT TOP(10) [ImagePath],
+        SELECT TOP(9) [ImagePath],
                        [EloScore]
         FROM [RateMe].[dbo].[Images]
         WHERE (GenderOfImage = ?) and (Suspended = 0)
