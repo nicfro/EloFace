@@ -44,11 +44,6 @@ body.outside {
 	margin-bottom: 10px;
 }
 
-.outside input:focus {
-	border: 2px solid #3498DB;
-	box-shadow: none;
-}
-
 .outside .btn {
 	display: block;
 }
