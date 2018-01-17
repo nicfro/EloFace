@@ -49,6 +49,8 @@ def home():
 
 @app.route('/vote', methods = ['POST'])
 def vote():
+    if not session.get('logged_in'):
+        return render_template('outside.html')
     choice = request.form['choice']
     pic1 = request.form['pic1'][46:]
     pic2 = request.form['pic2'][46:]
@@ -73,6 +75,8 @@ def newUser():
 
 @app.route('/createNewUser', methods = ['POST'])
 def createNewUser():
+    if not session.get('logged_in'):
+        return render_template('outside.html')
     username = request.form['username']
     password = request.form['password']
     country = request.form['country']
@@ -118,6 +122,8 @@ def upload():
 
 @app.route('/uploadToS3', methods = ['POST'])
 def uploadToS3():
+    if not session.get('logged_in'):
+        return render_template('outside.html')
     errors = {}
 
     username = session.get('username')
@@ -151,6 +157,8 @@ def uploadToS3():
 
 @app.route('/highscores/')
 def highscores():
+    if not session.get('logged_in'):
+        return render_template('outside.html')
     highscores = databaseScripts.getHighscores("female")
     highscores = [["https://s3-eu-west-1.amazonaws.com/ratemegirl/"+x[0],x[1], i] for i, x in enumerate(highscores, 1)]
     return render_template('highscores.html', highscores = highscores)
@@ -161,6 +169,8 @@ def adminReport():
 
 @app.route('/adminUsers/')
 def adminUsers():
+    if not session.get('logged_in'):
+        return render_template('outside.html')
     userImages = databaseScripts.getUserInfo("images")
     userVotes = databaseScripts.getUserInfo("vote")
     userReports = databaseScripts.getUserInfo("report")
