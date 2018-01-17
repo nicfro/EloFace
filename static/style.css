@@ -1,3 +1,7 @@
+.navbar + .container {
+	margin-top: 2rem;
+}
+
 body.outside {
 	background-color: #3498DB;
 	padding: 50px;
@@ -102,7 +106,7 @@ body.outside {
 	padding: 0;
 }
 
-.high-score-list {
+.high-score-list li {
 	float: left;
 	margin: 0 20px 20px 0;
 }
