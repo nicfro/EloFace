@@ -35,6 +35,11 @@ body.outside {
 	transition: border .5s;
 }
 
+.new-user-screen {
+	max-width: 600px;
+	margin: 0 auto;
+}
+
 .control-group {
 	margin-bottom: 10px;
 }
