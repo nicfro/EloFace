@@ -95,3 +95,8 @@ body.outside {
 .rate-images > li:last-child {
 	text-align: right;
 }
+
+.high-score-list {
+	list-style-type: none;
+	margin: 20px 0;
+}
