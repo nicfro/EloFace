@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="{{url_for('static', filename='javaScriptFunctions.js')}}"></script>
+</head>
+  <body>
+  	<h1>User report stats</h1>
+  	{% for userReport in userReports %}
+  	<p>{{ userReport[0] }} with {{ userReport[1] }} reports</p>
+  	{% endfor %}
+  	<h1>User vote stats</h1>
+  	{% for userVote in userVotes %}
+  	<p>{{ userVote[0] }} with {{ userVote[1] }} votes</p>
+  	{% endfor %}
+  	<h1>User upload stats</h1>
+  	{% for userImage in userImages %}
+  	<p>{{ userImage[0] }} with {{ userImage[1] }} uploads</p>
+  	{% endfor %}
+  </body>
+</html>
+

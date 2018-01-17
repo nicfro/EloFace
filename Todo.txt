@@ -1,0 +1,13 @@
+#Finalize how to site
+
+#handle quality of uploaded images
+#handle duplicates of uploaded images
+
+#add feedback site
+
+#add voting on males
+
+#Better the deletion of reported images -> Add admin site 
+#add user list under admin site, with views of votes
+
+#add solid face detection

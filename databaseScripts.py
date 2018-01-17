@@ -350,22 +350,17 @@ def getHighscores(gender):
     resp = cursor.fetchall()
     return resp
 
+'''
+supply with either vote, report or images
+Will return users and how many times 
+they did the corresponding action
+'''
+def getUserInfo(arg):
+    execString = "SELECT [Username], count(*) as sort FROM [RateMe].[dbo].["+arg+"] GROUP BY [Username] ORDER BY sort desc"
+    cursor.execute(execString)
+    resp = cursor.fetchall()
+    return resp
+
+print(getUserInfo("report"))
+
 #suspendImages()
-
-#back button on create user site
-
-#error handling when uploading images
-
-#Better the deletion of reported images -> Add admin site 
-
-#Finalize how to site
-
-#handle quality of uploaded images
-
-#handle duplicates of uploaded images
-
-#add feedback site
-
-#add solid face detection
-
-#add voting on males

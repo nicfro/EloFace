@@ -2,20 +2,20 @@ from flask import Flask, flash, redirect, render_template, request, session, abo
 import os
 import json
 from validate_email import validate_email
-from databaseScripts import connect, getHighscores, uploadImage, getRandomImages, getContesters, reportImage, ratePictures, userLogin, userExists, CreateNewUser, uploadS3Image, getNewFileName
+import databaseScripts
 from datetime import datetime
 from io import BytesIO
 import base64
 import re
 
 app = Flask(__name__)
-cursor = connect()
+cursor = databaseScripts.connect()
 
 @app.route('/login', methods=['POST'])
 def login():
     username = request.form['username']
     password = request.form['password']
-    if userLogin(username, password):
+    if databaseScripts.userLogin(username, password):
         session['logged_in'] = True
         session['username'] = request.form['username']
         return Response(home(),mimetype = "text/html")
@@ -36,9 +36,12 @@ def home():
         return render_template('login.html')
     else:
         username = session.get('username')
-        images = list(getContesters(username, "female"))
-        images = ["https://s3-eu-west-1.amazonaws.com/ratemegirl/"+s for s in images]
-        return render_template('home.html', images=images)
+        if username == "admin":
+            return render_template('admin.html')
+        else:
+            images = list(databaseScripts.getContesters(username, "female"))
+            images = ["https://s3-eu-west-1.amazonaws.com/ratemegirl/"+s for s in images]
+            return render_template('home.html', images=images)
 
 @app.route('/vote', methods = ['POST'])
 def vote():
@@ -46,19 +49,19 @@ def vote():
     pic1 = request.form['pic1'][46:]
     pic2 = request.form['pic2'][46:]
     username = session.get('username')
-    ratePictures(username, pic1, pic2, choice)
+    databaseScripts.ratePictures(username, pic1, pic2, choice)
     return redirect('/')
 
 @app.route('/report', methods = ['POST'])
 def report():
     imagePath = request.form['CastReport'][46:]
     username = session.get('username')
-    reportImage(username, imagePath)
+    databaseScripts.reportImage(username, imagePath)
     return redirect('/')
 
 @app.route('/howto/')
 def howto():
-	return render_template('howto.html')
+    return render_template('howto.html')
 
 @app.route('/newUser/')
 def newUser():
@@ -83,7 +86,7 @@ def createNewUser():
 
     if username.isalnum() != True:
         errors["usernameAlphanumericError"] = "Username can only contain alphanumeric characters"
-    if userExists(username):
+    if databaseScripts.userExists(username):
         errors["usernameExistsError"] = "Username is taken, please choose another"
     if len(password) < 6:
         errors["passwordLengthError"] = "Password must be 6 characters or longer"
@@ -97,7 +100,7 @@ def createNewUser():
         errors["ethnicityError"] = "Please select your ethnicity"
 
     if len(errors) == 0:
-        CreateNewUser(username, password, country, email, gender, bday, race)
+        databaseScripts.CreateNewUser(username, password, country, email, gender, bday, race)
         session['logged_in'] = True
         session['username'] = username
         return Response(home(),mimetype = "text/html")
@@ -124,7 +127,7 @@ def uploadToS3():
     ageGroup = request.form['ageGroup']
 
     print(gender, race)
-    if not userExists(username):
+    if not databaseScripts.userExists(username):
         errors["usernameError"] = "Username does not exist"
     if gender == "Please select image gender":
         errors["genderError"] = "Please select image gender"
@@ -133,12 +136,12 @@ def uploadToS3():
     if ageGroup == "Please select image age group":
         errors["ageError"] = "Please select image age group"
     if len(errors) == 0:
-        fileName = getNewFileName()
+        fileName = databaseScripts.getNewFileName()
         image_data = re.sub('^data:image/.+;base64,', '', image)
         encoded = BytesIO(base64.b64decode(image_data.encode()))
 
-        uploadS3Image(encoded, fileName)
-        uploadImage(fileName, username, gender, race, ageGroup)
+        databaseScripts.uploadS3Image(encoded, fileName)
+        databaseScripts.uploadImage(fileName, username, gender, race, ageGroup)
         resp = json.dumps({'success':True}), 200, {'ContentType':'application/json'}
         return resp    
     else:
@@ -148,9 +151,21 @@ def uploadToS3():
 
 @app.route('/highscores/')   
 def highscores():
-    highscores = getHighscores("female")
+    highscores = databaseScripts.getHighscores("female")
     highscores = [["https://s3-eu-west-1.amazonaws.com/ratemegirl/"+x[0],x[1], i] for i, x in enumerate(highscores, 1)]
-    return render_template('highscores.html', highscores=highscores)
+    return render_template('highscores.html', highscores = highscores)
+
+@app.route('/adminReport/')
+def adminReport():
+    return render_template('adminReport.html')
+
+@app.route('/adminUsers/')
+def adminUsers():
+    userImages = databaseScripts.getUserInfo("images")
+    userVotes = databaseScripts.getUserInfo("vote")
+    userReports = databaseScripts.getUserInfo("report")
+    return render_template('adminUsers.html', userImages = userImages,
+                            userVotes = userVotes, userReports = userReports)
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)
