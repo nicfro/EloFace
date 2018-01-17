@@ -12,18 +12,18 @@
 
 		<div class="login-form">
 			<div class="control-group">
-				<input type="text" class="login-field" value="" placeholder="Username" name="username" id="username">
+				<input type="text" class="form-control login-field" value="" placeholder="Username" name="username" id="username">
 				<label class="login-field-icon fui-user" for="login-name"></label>
 			</div>
 
 			<div class="control-group">
-				<input type="password" class="login-field" value="" placeholder="Password" name="password" id="password">
+				<input type="password" class="form-control login-field" value="" placeholder="Password" name="password" id="password">
 				<label class="login-field-icon fui-lock" for="login-pass"></label>
 			</div>
 
 			<div id="fault" name="fault" class="warningFields"></div>
 
-			<input type="submit" value="Log In" class="btn btn-primary btn-large" onclick="sendLogin()">
+			<input type="submit" value="Log In" class="btn btn-primary btn-lg" onclick="sendLogin()">
 
 			<input type="button" value="Create New User" class="btn" onclick="window.location.href='/newUser'" />
 		</div>
