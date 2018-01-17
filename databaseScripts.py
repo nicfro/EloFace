@@ -361,6 +361,4 @@ def getUserInfo(arg):
     resp = cursor.fetchall()
     return resp
 
-print(getUserInfo("report"))
-
 #suspendImages()
