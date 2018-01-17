@@ -31,6 +31,8 @@ def postLogin():
 
 @app.route("/logout")
 def logout():
+    if not session.get('logged_in'):
+        return render_template('outside.html')
     session['logged_in'] = False
     return redirect('/')
 
@@ -67,6 +69,8 @@ def report():
 
 @app.route('/howto/')
 def howto():
+    if not session.get('logged_in'):
+        return render_template('outside.html')
     return render_template('howto.html')
 
 @app.route('/newUser/')
@@ -118,12 +122,15 @@ def createNewUser():
 
 @app.route('/upload/')
 def upload():
+    if not session.get('logged_in'):
+        return render_template('outside.html')
     return render_template('upload.html')
 
 @app.route('/uploadToS3', methods = ['POST'])
 def uploadToS3():
     if not session.get('logged_in'):
         return render_template('outside.html')
+
     errors = {}
 
     username = session.get('username')
