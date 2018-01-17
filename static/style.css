@@ -1,55 +1,48 @@
-* {
-box-sizing: border-box;
+body.outside {
+  background-color: #3498DB;
+  padding: 50px;
 }
 
-*:focus {
-	outline: none;
-}
-body {
-font-family: Arial;
-background-color: #3498DB;
-padding: 50px;
-}
 .login {
-margin: 20px auto;
-width: 300px;
+  margin: 20px auto;
+  width: 300px;
 }
 .login-screen {
-background-color: #FFF;
-padding: 20px;
-border-radius: 5px
+  background-color: #FFF;
+  padding: 20px;
+  border-radius: 5px
 }
 
 .app-title {
-text-align: center;
-color: #777;
+  text-align: center;
+  color: #777;
 }
 
 .login-form {
-text-align: center;
+  text-align: center;
 }
 .control-group {
-margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
-input {
-text-align: center;
-background-color: #ECF0F1;
-border: 2px solid transparent;
-border-radius: 3px;
-font-size: 16px;
-font-weight: 200;
-padding: 10px 0;
-width: 250px;
-transition: border .5s;
+.outside input {
+  text-align: center;
+  background-color: #ECF0F1;
+  border: 2px solid transparent;
+  border-radius: 3px;
+  font-size: 16px;
+  font-weight: 200;
+  padding: 10px 0;
+  width: 250px;
+  transition: border .5s;
 }
 
-input:focus {
+.outside input:focus {
 border: 2px solid #3498DB;
 box-shadow: none;
 }
 
-.btn {
+.outside .btn {
   border: 2px solid transparent;
   background: #3498DB;
   color: #ffffff;
@@ -66,7 +59,7 @@ box-shadow: none;
   margin: 0 auto;
 }
 
-.btn:hover {
+.outside .btn:hover {
   background-color: #2980B9;
 }
 
@@ -97,14 +90,14 @@ box-shadow: none;
   cursor: move;
 }
 
-.image-size-label {
+.uploader .image-size-label {
   margin-top: 10px;
 }
 
-input, .export {
+.uploader input, .uploader .export {
   display: block;
 }
 
-button {
+.uploader button {
   margin-top: 10px;
 }
