@@ -82,47 +82,44 @@ def newUser():
 
 @app.route('/createNewUser', methods = ['POST'])
 def createNewUser():
-    if not session.get('logged_in'):
-        return render_template('outside.html')
+    username = request.form['username']
+    password = request.form['password']
+    country = request.form['country']
+    email = request.form['email']
+    gender = request.form['gender']
+    bday = request.form['bday']
+    race = request.form['race']
+
+    errors = {}
+
+    try:
+        bday = datetime.strptime(bday, "%Y-%m-%d")
+    except:
+        errors["bdayError"] = "Please enter your birthday"
+
+    if username.isalnum() != True:
+        errors["usernameAlphanumericError"] = "Username can only contain alphanumeric characters"
+    if databaseScripts.userExists(username):
+        errors["usernameExistsError"] = "Username is taken, please choose another"
+    if len(password) < 6:
+        errors["passwordLengthError"] = "Password must be 6 characters or longer"
+    if not validate_email(email):
+        errors["validEmailError"] = "Please enter valid email"
+    if gender == "Please select your gender":
+        errors["genderError"] = "Please select your gender"
+    if country == "Please select your country":
+        errors["countryError"] = "Please select your country"
+    if race == "Please select your ethnicity":
+        errors["ethnicityError"] = "Please select your ethnicity"
+
+    if len(errors) == 0:
+        databaseScripts.CreateNewUser(username, password, country, email, gender, bday, race)
+        session['logged_in'] = True
+        session['username'] = username
+        return Response(home(),mimetype = "text/html")
     else:
-        username = request.form['username']
-        password = request.form['password']
-        country = request.form['country']
-        email = request.form['email']
-        gender = request.form['gender']
-        bday = request.form['bday']
-        race = request.form['race']
-
-        errors = {}
-
-        try:
-            bday = datetime.strptime(bday, "%Y-%m-%d")
-        except:
-            errors["bdayError"] = "Please enter your birthday"
-
-        if username.isalnum() != True:
-            errors["usernameAlphanumericError"] = "Username can only contain alphanumeric characters"
-        if databaseScripts.userExists(username):
-            errors["usernameExistsError"] = "Username is taken, please choose another"
-        if len(password) < 6:
-            errors["passwordLengthError"] = "Password must be 6 characters or longer"
-        if not validate_email(email):
-            errors["validEmailError"] = "Please enter valid email"
-        if gender == "Please select your gender":
-            errors["genderError"] = "Please select your gender"
-        if country == "Please select your country":
-            errors["countryError"] = "Please select your country"
-        if race == "Please select your ethnicity":
-            errors["ethnicityError"] = "Please select your ethnicity"
-
-        if len(errors) == 0:
-            databaseScripts.CreateNewUser(username, password, country, email, gender, bday, race)
-            session['logged_in'] = True
-            session['username'] = username
-            return Response(home(),mimetype = "text/html")
-        else:
-            json_data = json.dumps(errors)
-            return Response(json_data ,mimetype = "application/json")
+        json_data = json.dumps(errors)
+        return Response(json_data ,mimetype = "application/json")
 
 @app.route('/upload/')
 def upload():
