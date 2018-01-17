@@ -72,7 +72,6 @@ function sendImage(imageData) {
 	var info = {}
 
 	info.upload = imageData
-	console.log(imageData)
 	info.gender = gender.value
 	info.race = race.value
 	info.ageGroup = ageGroup.value
