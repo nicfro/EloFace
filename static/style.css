@@ -114,3 +114,10 @@ body.outside {
 .high-score-list li p {
 	margin-top: .5em;
 }
+
+.image-editor {
+	background-color: #eee;
+	padding: 20px;
+	border-radius: 6px;
+	margin: 20px 0;
+}
