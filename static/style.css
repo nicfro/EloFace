@@ -3,29 +3,27 @@ body.outside {
 	padding: 50px;
 }
 
+.app-title {
+	text-align: center;
+	color: #777;
+}
+
 .login {
 	margin: 20px auto;
 	width: 300px;
 }
+
 .login-screen {
 	background-color: #FFF;
 	padding: 20px;
 	border-radius: 5px
 }
 
-.app-title {
-	text-align: center;
-	color: #777;
-}
-
 .login-form {
 	text-align: center;
 }
-.control-group {
-	margin-bottom: 10px;
-}
 
-.outside input {
+.login-form input {
 	text-align: center;
 	background-color: #ECF0F1;
 	border: 2px solid transparent;
@@ -37,9 +35,13 @@ body.outside {
 	transition: border .5s;
 }
 
+.control-group {
+	margin-bottom: 10px;
+}
+
 .outside input:focus {
-border: 2px solid #3498DB;
-box-shadow: none;
+	border: 2px solid #3498DB;
+	box-shadow: none;
 }
 
 .outside .btn {
