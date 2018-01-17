@@ -78,3 +78,12 @@ body.outside {
 .uploader button {
 	margin-top: 10px;
 }
+
+.rate-images {
+	display: flex;
+	width: 532px;
+}
+
+.rate-images > li {
+	flex: 0 0 256px;
+}
