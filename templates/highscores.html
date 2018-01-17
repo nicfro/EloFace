@@ -6,7 +6,7 @@
   <ul class="high-score-list">
   {% for highscore in highscores %}
   <li>
-    <img src={{ highscore[0] }} width="250" height="250" id="image1">
+    <img src="{{ highscore[0] }}" width="250" height="250" id="image1">
     <p>Rank {{ highscore[2] }} with {{ highscore[1] }} elo</p>
   </li>
   {% endfor %}
