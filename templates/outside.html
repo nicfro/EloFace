@@ -1,0 +1,23 @@
+{% extends "layoutOutside.html" %}
+{% block content %}
+{% if session['logged_in'] %}
+<p>You're logged in already!</p>
+{% else %}
+
+<div class="login">
+	<div class="login-screen">
+		<div class="app-title">
+			<h1>Rank Me</h1>
+		</div>
+
+		<p>Rank Me is something beautiful lorem ipsum dolor sit ameit consectetur adipiscing elit.</p>
+
+		<p>Rank Me is something beautiful lorem ipsum dolor sit ameit consectetur adipiscing elit.</p>
+
+		<p><a class="btn btn-primary" href="/newUser">Join now</a></p>
+		<p><a class="btn btn-primary" href="/login">Log in</a></p>
+	</div>
+</div>
+
+{% endif %}
+{% endblock %}

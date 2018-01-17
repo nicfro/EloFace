@@ -11,6 +11,10 @@ import re
 app = Flask(__name__)
 cursor = databaseScripts.connect()
 
+@app.route('/login', methods=['GET'])
+def login():
+    return render_template('login.html')
+
 @app.route('/login', methods=['POST'])
 def login():
     username = request.form['username']
@@ -33,7 +37,7 @@ def logout():
 @app.route('/')
 def home():
     if not session.get('logged_in'):
-        return render_template('login.html')
+        return render_template('outside.html')
     else:
         username = session.get('username')
         if username == "admin":
@@ -78,7 +82,7 @@ def createNewUser():
     race = request.form['race']
 
     errors = {}
-    
+
     try:
         bday = datetime.strptime(bday, "%Y-%m-%d")
     except:
@@ -106,9 +110,9 @@ def createNewUser():
         return Response(home(),mimetype = "text/html")
     else:
         json_data = json.dumps(errors)
-        return Response(json_data ,mimetype = "application/json") 
-  
-@app.route('/upload/')      
+        return Response(json_data ,mimetype = "application/json")
+
+@app.route('/upload/')
 def upload():
     return render_template('upload.html')
 
@@ -143,13 +147,13 @@ def uploadToS3():
         databaseScripts.uploadS3Image(encoded, fileName)
         databaseScripts.uploadImage(fileName, username, gender, race, ageGroup)
         resp = json.dumps({'success':True}), 200, {'ContentType':'application/json'}
-        return resp    
+        return resp
     else:
         print(errors)
         json_data = json.dumps(errors)
-        return Response(json_data ,mimetype = "application/json") 
+        return Response(json_data ,mimetype = "application/json")
 
-@app.route('/highscores/')   
+@app.route('/highscores/')
 def highscores():
     highscores = databaseScripts.getHighscores("female")
     highscores = [["https://s3-eu-west-1.amazonaws.com/ratemegirl/"+x[0],x[1], i] for i, x in enumerate(highscores, 1)]
