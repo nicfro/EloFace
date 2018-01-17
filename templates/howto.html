@@ -1,20 +1,15 @@
-<!DOCTYPE html>
-<html>
-  <body>
-	{% extends "layout.html" %}
-	{% block content %}
-	<div class="howto">
-	<h1>Instructions</h1>
-	<p>This site is constructed for academic purpose. The overall goal of this project is to collect training data for a facial feature evaluation system. You, as a user help immensely with this otherwise daunting and difficult data compilation task.</p>
-	<h1>Voting</h1>
- 	<p>
-	You are presented with two images; your objective is to judge which image you find most appealing. If you cannot decide, you can use the “tie” option. 
-	</p>
-	<h1>Reporting</h1>
-	<p>If either of the images does not contain a singular face of the correct gender, please report it, so we can have it removed.</p>
-	<h1>Uploading</h1>
-	<p>You can upload up to 9 images of your own and track their progress on the site. Please only upload images that contains a singular non obstructed face.</p>
-	</div>
-	{% endblock %}
-  </body>
-</html>
+{% extends "layout.html" %}
+{% block content %}
+<div class="howto">
+<h1>Instructions</h1>
+<p>This site is constructed for academic purpose. The overall goal of this project is to collect training data for a facial feature evaluation system. You, as a user help immensely with this otherwise daunting and difficult data compilation task.</p>
+<h1>Voting</h1>
+<p>
+You are presented with two images; your objective is to judge which image you find most appealing. If you cannot decide, you can use the “tie” option.
+</p>
+<h1>Reporting</h1>
+<p>If either of the images does not contain a singular face of the correct gender, please report it, so we can have it removed.</p>
+<h1>Uploading</h1>
+<p>You can upload up to 9 images of your own and track their progress on the site. Please only upload images that contains a singular non obstructed face.</p>
+</div>
+{% endblock %}
