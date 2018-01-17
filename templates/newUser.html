@@ -1,12 +1,5 @@
-<!DOCTYPE html>
-
-<html>
-<head>
-<link rel="stylesheet" href="/static/style.css" type="text/css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="{{url_for('static', filename='javaScriptFunctions.js')}}"></script>
-</head>
-<body class="outside">
+{% extends "layoutOutside.html" %}
+{% block content %}
 
 <div class="createNewUser">
 	<div class="login-screen">
@@ -306,5 +299,5 @@
 		</div>
 	</div>
 </div>
-</body>
-</html>
+
+{% endblock %}

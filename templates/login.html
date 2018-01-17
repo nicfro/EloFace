@@ -1,23 +1,13 @@
-<!DOCTYPE html>
-
-<html>
-<head>
-<link rel="stylesheet" href="/static/style.css" type="text/css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="{{url_for('static', filename='javaScriptFunctions.js')}}"></script>
-</head>
-  <body class="outside">
-
-{% block body %}
+{% extends "layoutOutside.html" %}
+{% block content %}
 {% if session['logged_in'] %}
 <p>You're logged in already!</p>
 {% else %}
 
-
 <div class="login">
 	<div class="login-screen">
 		<div class="app-title">
-			<h1>Login</h1>
+			<h1>Log in</h1>
 		</div>
 
 		<div class="login-form">
@@ -43,5 +33,3 @@
 
 {% endif %}
 {% endblock %}
-</body>
-</html>
