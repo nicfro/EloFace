@@ -79,11 +79,19 @@ body.outside {
 	margin-top: 10px;
 }
 
-.rate-images {
+.rate-layout {
 	display: flex;
 	width: 532px;
+	justify-content: space-between;
+	list-style-type: none;
+	margin: 20px 0;
+	padding: 0;
 }
 
 .rate-images > li {
 	flex: 0 0 256px;
+}
+
+.rate-images > li:last-child {
+	text-align: right;
 }
