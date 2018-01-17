@@ -1,62 +1,66 @@
 {% extends "layout.html" %}
 {% block content %}
+<h1>Upload image</h1>
 <div class="uploader">
-  <div class="image-editor">
-    <input type="file" class="cropit-image-input">
-    <div class="cropit-preview"></div>
-    <div class="image-size-label">
-      Resize image
-  </div>
-    <input type="range" class="cropit-image-zoom-input">
-    <button class="export">Export</button>
-  </div>
-  <div id="imageError" name="imageError" class="warningFields"></div>
-  <div id="usernameError" name="usernameError" class="warningFields"></div>
-  <div class="control-group">
-    <select id="gender" name="gender">
-      <option value="Please select image gender" selected>Select image gender</option>
-        <option value="male">Male</option>
-        <option value="female">Female</option>
-    </select>
-  </div>
-  <div id="genderError" name="genderError" class="warningFields"></div>
+	<div class="image-editor">
+		<input type="file" class="cropit-image-input">
+		<div class="cropit-preview"></div>
+		<div class="image-size-label">
+			Resize image
+		</div>
+		<input type="range" class="cropit-image-zoom-input">
+		<div id="imageError" name="imageError" class="warningFields"></div>
+	</div>
 
-  <div class="control-group">
-    <select id="race" name="race">
-        <option value="Please select image ethnicity" selected>Select image ethnicity</option>
-        <option value="African">African</option>
-        <option value="Indian asian">Arabian</option>
-        <option value="Asian">Asian</option>
-        <option value="Caucasian">Caucasian</option>
-        <option value="Hispanic">Hispanic</option>
-        <option value="Indian asian">Indian asian</option>
-        <option value="Other">Other</option>
-    </select>
-    </div>
-  <div id="ethnicityError" name="ethnicityError" class="warningFields"></div>
+	<div class="form-group">
+		<label for="gender">Gender</label>
+		<select id="gender" name="gender" class="form-control">
+			<option value="Please select image gender" selected>Select image gender</option>
+				<option value="male">Male</option>
+				<option value="female">Female</option>
+		</select>
+		<div id="genderError" name="genderError" class="warningFields"></div>
+	</div>
 
-    <div class="control-group">
-    <select id="ageGroup" name="ageGroup">
-        <option value="Please select image age group" selected>Select image age group</option>
-        <option value="16-21">16-21</option>
-        <option value="22-30">22-30</option>
-        <option value="31-45">31-45</option>
-        <option value="46-65">46-65</option>
-        <option value="65+">65+</option>
-    </select>
-    </div>
-    <div id="ageError" name="ageError" class="warningFields"></div>
+	<div class="form-group">
+		<label for="race">Ethnicity</label>
+		<select id="race" name="race" class="form-control">
+				<option value="Please select image ethnicity" selected>Select image ethnicity</option>
+				<option value="African">African</option>
+				<option value="Indian asian">Arabian</option>
+				<option value="Asian">Asian</option>
+				<option value="Caucasian">Caucasian</option>
+				<option value="Hispanic">Hispanic</option>
+				<option value="Indian asian">Indian Asian</option>
+				<option value="Other">Other</option>
+		</select>
+		<div id="ethnicityError" name="ethnicityError" class="warningFields"></div>
+	</div>
+
+	<div class="form-group">
+		<label for="ageGroup">Age group</label>
+		<select id="ageGroup" name="ageGroup" class="form-control">
+			<option value="Please select image age group" selected>Select image age group</option>
+			<option value="16-21">16-21</option>
+			<option value="22-30">22-30</option>
+			<option value="31-45">31-45</option>
+			<option value="46-65">46-65</option>
+			<option value="65+">65+</option>
+		</select>
+		<div id="ageError" name="ageError" class="warningFields"></div>
+	</div>
+	<button class="export btn btn-primary btn-lg">Upload</button>
 </div>
 
 <script>
-  $(function() {
-    $('.image-editor').cropit({
-    });
+	$(function() {
+		$('.image-editor').cropit({
+		});
 
-    $('.export').click(function() {
-      var imageData = $('.image-editor').cropit('export');
-      sendImage(imageData);
-    });
-  });
+		$('.export').click(function() {
+			var imageData = $('.image-editor').cropit('export');
+			sendImage(imageData);
+		});
+	});
 </script>
 {% endblock %}
