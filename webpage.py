@@ -130,9 +130,6 @@ def uploadToS3():
     race = request.form['race']
     ageGroup = request.form['ageGroup']
 
-    print(gender, race)
-    if not databaseScripts.userExists(username):
-        errors["usernameError"] = "Username does not exist"
     if gender == "Please select image gender":
         errors["genderError"] = "Please select image gender"
     if race == "Please select image ethnicity":
@@ -149,7 +146,6 @@ def uploadToS3():
         resp = json.dumps({'success':True}), 200, {'ContentType':'application/json'}
         return resp
     else:
-        print(errors)
         json_data = json.dumps(errors)
         return Response(json_data ,mimetype = "application/json")
 
