@@ -12,11 +12,11 @@ app = Flask(__name__)
 cursor = databaseScripts.connect()
 
 @app.route('/login', methods=['GET'])
-def login():
+def getLogin():
     return render_template('login.html')
 
 @app.route('/login', methods=['POST'])
-def login():
+def postLogin():
     username = request.form['username']
     password = request.form['password']
     if databaseScripts.userLogin(username, password):
@@ -173,5 +173,5 @@ def adminUsers():
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)
-    app.run(debug=True)
-    #app.run(host='0.0.0.0', port=80)
+    #app.run(debug=True)
+    app.run(host='0.0.0.0', port=5123)
