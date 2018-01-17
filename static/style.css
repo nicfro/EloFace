@@ -99,4 +99,5 @@ body.outside {
 .high-score-list {
 	list-style-type: none;
 	margin: 20px 0;
+	padding: 0;
 }
