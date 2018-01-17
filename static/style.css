@@ -1,40 +1,40 @@
 body.outside {
-  background-color: #3498DB;
-  padding: 50px;
+	background-color: #3498DB;
+	padding: 50px;
 }
 
 .login {
-  margin: 20px auto;
-  width: 300px;
+	margin: 20px auto;
+	width: 300px;
 }
 .login-screen {
-  background-color: #FFF;
-  padding: 20px;
-  border-radius: 5px
+	background-color: #FFF;
+	padding: 20px;
+	border-radius: 5px
 }
 
 .app-title {
-  text-align: center;
-  color: #777;
+	text-align: center;
+	color: #777;
 }
 
 .login-form {
-  text-align: center;
+	text-align: center;
 }
 .control-group {
-  margin-bottom: 10px;
+	margin-bottom: 10px;
 }
 
 .outside input {
-  text-align: center;
-  background-color: #ECF0F1;
-  border: 2px solid transparent;
-  border-radius: 3px;
-  font-size: 16px;
-  font-weight: 200;
-  padding: 10px 0;
-  width: 250px;
-  transition: border .5s;
+	text-align: center;
+	background-color: #ECF0F1;
+	border: 2px solid transparent;
+	border-radius: 3px;
+	font-size: 16px;
+	font-weight: 200;
+	padding: 10px 0;
+	width: 250px;
+	transition: border .5s;
 }
 
 .outside input:focus {
@@ -43,61 +43,44 @@ box-shadow: none;
 }
 
 .outside .btn {
-  border: 2px solid transparent;
-  background: #3498DB;
-  color: #ffffff;
-  font-size: 16px;
-  line-height: 25px;
-  padding: 10px 0;
-  text-decoration: none;
-  text-shadow: none;
-  border-radius: 3px;
-  box-shadow: none;
-  transition: 0.25s;
-  display: block;
-  width: 250px;
-  margin: 0 auto;
-}
-
-.outside .btn:hover {
-  background-color: #2980B9;
+	display: block;
 }
 
 .login-link {
-  font-size: 12px;
-  color: #444;
-  display: block;
+	font-size: 12px;
+	color: #444;
+	display: block;
 	margin-top: 12px;
 }
 
 #warning {
-  background-color: #AAA;
-  padding: 20px;
-  border-radius: 5px
+	background-color: #AAA;
+	padding: 20px;
+	border-radius: 5px
 }
 
 .cropit-preview {
-  background-color: #f8f8f8;
-  background-size: cover;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  margin-top: 7px;
-  width: 250px;
-  height: 250px;
+	background-color: #f8f8f8;
+	background-size: cover;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	margin-top: 7px;
+	width: 250px;
+	height: 250px;
 }
 
 .cropit-preview-image-container {
-  cursor: move;
+	cursor: move;
 }
 
 .uploader .image-size-label {
-  margin-top: 10px;
+	margin-top: 10px;
 }
 
 .uploader input, .uploader .export {
-  display: block;
+	display: block;
 }
 
 .uploader button {
-  margin-top: 10px;
+	margin-top: 10px;
 }
