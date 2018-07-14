@@ -11,3 +11,16 @@
 #add user list under admin site, with views of votes
 
 #add solid face detection
+
+#responsiveness "Juiciness" på handlinger
+
+#Achievements 
+
+#point/experience
+#Color schemes changes with XP
+
+#Cooldown on each page load, to discourage clicking on the same button: Borders on pictures based on xp, cant bote before borders consume image.
+
+#Unlock features -> High scores, upload eget billede, Track dit eget billede, unlocker at blive scoret af netværket.
+
+#Mobil/tablet
